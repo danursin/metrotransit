@@ -26,7 +26,7 @@ class MetroTransitClient {
             return data;
         } catch (err) {
             if (axios.isAxiosError(err)) {
-                throw new Error(err.response?.data);
+                throw new Error(err.response?.data as string);
             }
             throw err;
         }
@@ -39,7 +39,7 @@ class MetroTransitClient {
             return data;
         } catch (err) {
             if (axios.isAxiosError(err)) {
-                throw new Error(err.response?.data);
+                throw new Error(err.response?.data as string);
             }
             throw err;
         }
@@ -52,7 +52,7 @@ class MetroTransitClient {
             return data;
         } catch (err) {
             if (axios.isAxiosError(err)) {
-                throw new Error(err.response?.data);
+                throw new Error(err.response?.data as string);
             }
             throw err;
         }
@@ -65,7 +65,7 @@ class MetroTransitClient {
             return data;
         } catch (err) {
             if (axios.isAxiosError(err)) {
-                throw new Error(err.response?.data);
+                throw new Error(err.response?.data as string);
             }
             throw err;
         }
@@ -78,7 +78,7 @@ class MetroTransitClient {
             return data;
         } catch (err) {
             if (axios.isAxiosError(err)) {
-                throw new Error(err.response?.data);
+                throw new Error(err.response?.data as string);
             }
             throw err;
         }
@@ -91,7 +91,7 @@ class MetroTransitClient {
             return data;
         } catch (err) {
             if (axios.isAxiosError(err)) {
-                throw new Error(err.response?.data);
+                throw new Error(err.response?.data as string);
             }
             throw err;
         }
@@ -104,7 +104,7 @@ class MetroTransitClient {
             return data;
         } catch (err) {
             if (axios.isAxiosError(err)) {
-                throw new Error(err.response?.data);
+                throw new Error(err.response?.data as string);
             }
             throw err;
         }
@@ -129,11 +129,12 @@ export interface Route {
     Route: string;
 }
 
+/** North and East are 0, South and West are 1. API documentation erroneously declares: `"Directions are identified with an ID value. 1 = South, 2 = East, 3 = West, 4 = North."` (https://svc.metrotransit.org/nextrip) */
 export enum DirectionValue {
     South = "1",
-    East = "2",
-    West = "3",
-    North = "4"
+    East = "0",
+    West = "1",
+    North = "0"
 }
 
 export type Direction = TextValuePair;
@@ -148,9 +149,9 @@ export interface Departure {
     Actual: boolean;
     /** indicates the work for a vehicle */
     BlockNumber: string;
-    /** displays time format for scheduled time and countdown format for real-time departures. (Actual=true) */
+    /** displays time format for scheduled time and countdown format for real-time departures. (Actual=true). If Actual is true, returns a format similar to `15 Minutes`. If Actual is false, returns a time string similar to `11:32`.  */
     DepartureText: string;
-    /** datetime value of the departure time */
+    /** datetime value of the departure time. In .NET serialized format similar to `"/Date(1634094780000-0500)/"` */
     DepartureTime: string;
     /** describes the trip destination */
     Description: string;
@@ -159,7 +160,7 @@ export interface Departure {
     /** the current route for this departure */
     Route: string;
     /** the current trip direction */
-    RouteDirection: DirectionValue;
+    RouteDirection: "EB" | "WB" | "NB" | "SB";
     /** the route branch letter where applicable */
     Terminal: string;
     /** this value is currently not available and always returns 0. (maybe someday) */
@@ -172,23 +173,23 @@ export interface Departure {
 
 export interface VehicleLocation {
     /**  indicates the work for a vehicle */
-    BlockNumber: string;
+    BlockNumber: number;
     /** the direction ID of the current trip direction */
     Direction: DirectionValue;
-    /** the time the location was last reported by the vehicle */
+    /** the time the location was last reported by the vehicle. In .NET serialized format similar to `"/Date(1634094780000-0500)/"` */
     LocationTime: string;
     /** the current route for the vehicle */
     Route: string;
     /** the route branch letter where applicable */
     Terminal: string;
     /** last reported latitude */
-    VehicleLatitude: string;
+    VehicleLatitude: number;
     /** last reported longitude */
-    VehicleLongitude: string;
+    VehicleLongitude: number;
+    /** Angle of direction 0-360 */
+    Bearing: number;
     /** this value is currently not available and always returns 0. (for future use) */
-    Bearing: string;
-    /** this value is currently not available and always returns 0. (for future use) */
-    Odometer: string;
-    /** this value is currently not available and always returns 0. (for future use) */
-    Speed: string;
+    Odometer: number;
+    /** last recorded speed */
+    Speed: number;
 }
