@@ -1,6 +1,6 @@
 {
     "name": "metrotransit",
-    "version": "0.0.2",
+    "version": "0.0.3",
     "description": "Metro Transit API wrapper for the Minneapolis / St.Paul NexTrip web service as defined by https://svc.metrotransit.org/nextrip",
     "author": "Dan Ursin",
     "scripts": {
